@@ -1,0 +1,22 @@
+version: "3.7"
+
+volumes:
+  db_data: {}
+
+services:
+  db:
+    image: mysql:9.0.0
+    restart: always
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env.local
+    volumes:
+      - db_data:/var/lib/mysql
+  adminer:
+    image: adminer:4.8.1
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
