@@ -1,16 +1,15 @@
 import {
   insertUserSchema,
+  updateUserSchema,
   selectUserSchema,
   loginUserSchema,
   registerUserSchema,
 } from "@/validations";
 import { z } from "zod";
 
-export type TCreateUserInput = Omit<
-  z.infer<typeof insertUserSchema>,
-  "id" | "createdAt" | "updatedAt"
->;
-export type TUpdateUserInput = Partial<TCreateUserInput>; // For future reference
+export type TCreateUserInput = z.infer<typeof insertUserSchema>;
+
+export type TUpdateUserInput = z.infer<typeof updateUserSchema>; // For future reference
 
 export type TRegisterUserInput = z.infer<typeof registerUserSchema>;
 

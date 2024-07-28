@@ -1,35 +1,22 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { UserService } from "../../../services";
-import { UserDTO } from "../../../dto";
+import { UserController } from "../../../controllers";
+import { RequestHandler } from "../../../utils";
+import { AuthMiddleware } from "../../../middlewares";
 
-const userService = new UserService();
+const userController = new UserController();
+const authMiddleware = new AuthMiddleware();
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const user = await userService.findById(Number.parseInt(params.id));
-  const mappedUser = new UserDTO(user);
-  return NextResponse.json({ user: mappedUser }, { status: 200 });
-}
-
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const data = await req.json();
-  const updatedUser = await userService.updateById(
-    Number.parseInt(params.id),
-    data
-  );
-  const mappedUser = new UserDTO(updatedUser);
-  return NextResponse.json({ user: mappedUser }, { status: 200 });
-}
-
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  await userService.deleteById(Number.parseInt(params.id));
-  return NextResponse.json({}, { status: 200 });
-}
+export const GET = RequestHandler(
+  authMiddleware.verifyToken.bind(authMiddleware),
+  authMiddleware.verifyAdmin.bind(authMiddleware),
+  userController.findById.bind(userController)
+);
+export const PATCH = RequestHandler(
+  authMiddleware.verifyToken.bind(authMiddleware),
+  authMiddleware.verifyAdmin.bind(authMiddleware),
+  userController.updateById.bind(userController)
+);
+export const DELETE = RequestHandler(
+  authMiddleware.verifyToken.bind(authMiddleware),
+  authMiddleware.verifyAdmin.bind(authMiddleware),
+  userController.deleteById.bind(userController)
+);

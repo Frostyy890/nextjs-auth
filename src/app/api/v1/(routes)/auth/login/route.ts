@@ -1,12 +1,6 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { AuthService } from "@/app/api/v1/services";
-import { UserDTO } from "../../../dto";
+import { AuthController } from "../../../controllers";
+import { RequestHandler } from "../../../utils";
 
-const authService = new AuthService();
+const authController = new AuthController();
 
-export async function POST(req: NextRequest) {
-  const data = await req.json();
-  const { user, accessToken } = await authService.login(data);
-  const mappedUser = new UserDTO(user);
-  return NextResponse.json({ user: mappedUser, accessToken }, { status: 200 });
-}
+export const POST = RequestHandler(authController.login.bind(authController));

@@ -1,18 +1,17 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { UserService } from "../../services";
-import { UserDTO } from "../../dto";
+import { UserController } from "../../controllers";
+import { RequestHandler } from "../../utils";
+import { AuthMiddleware } from "../../middlewares";
 
-const userService = new UserService();
+const userController = new UserController();
+const authMiddleware = new AuthMiddleware();
 
-export async function GET() {
-  const users = await userService.findMany();
-  const mappedUsers = users.map((user) => new UserDTO(user));
-  return NextResponse.json({ users: mappedUsers }, { status: 200 });
-}
-
-export async function POST(req: NextRequest) {
-  const data = await req.json();
-  const newUser = await userService.create(data);
-  const mappedUser = new UserDTO(newUser);
-  return NextResponse.json({ user: mappedUser }, { status: 201 });
-}
+export const GET = RequestHandler(
+  authMiddleware.verifyToken.bind(authMiddleware),
+  authMiddleware.verifyAdmin.bind(authMiddleware),
+  userController.findMany.bind(userController)
+);
+export const POST = RequestHandler(
+  authMiddleware.verifyToken.bind(authMiddleware),
+  authMiddleware.verifyAdmin.bind(authMiddleware),
+  userController.create.bind(userController)
+);
