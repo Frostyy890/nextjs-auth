@@ -29,6 +29,10 @@ export const apiEndpoints = [
     method: "POST",
     path: "/api/v1/auth/register",
   },
+  {
+    method: "POST",
+    path: "/api/v1/auth/refresh",
+  },
 ] satisfies ApiEndpoint[];
 
 export function matchEndpoint(pathname: string): ApiEndpoint | undefined {

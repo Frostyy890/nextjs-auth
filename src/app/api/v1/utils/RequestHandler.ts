@@ -1,14 +1,14 @@
-import { type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { errorHandler } from "./ErrorHandler";
 
 export const RequestHandler = (...middlewares: Function[]) => {
   return async (req: NextRequest, args: any) => {
     try {
-      const handler = middlewares[middlewares.length - 1];
-      for (let i = 0; i < middlewares.length - 1; i++) {
-        await middlewares[i](req, args);
+      for (const middleware of middlewares) {
+        const response = await middleware(req, args);
+        if (response) return response;
       }
-      return await handler(req, args);
+      return NextResponse.next();
     } catch (error) {
       return errorHandler(error);
     }

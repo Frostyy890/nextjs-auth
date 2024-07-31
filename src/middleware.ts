@@ -7,8 +7,12 @@ export async function middleware(req: NextRequest) {
   } = req;
   if (pathname.startsWith("/api")) {
     const endpoint = matchEndpoint(pathname);
-    if (!endpoint) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!endpoint)
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
     if (endpoint.method !== req.method)
-      return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+      return NextResponse.json(
+        { error: "Method not allowed" },
+        { status: 405 }
+      );
   }
 }

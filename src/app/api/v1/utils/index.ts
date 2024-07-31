@@ -1,2 +1,2 @@
 export * from "./RequestHandler";
-export * from "./GenerateAuthToken";
+export * from "./GenerateAuthTokens";
